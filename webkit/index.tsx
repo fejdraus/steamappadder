@@ -1,66 +1,34 @@
-// @ts-ignore
-import { callable } from '@steambrew/webkit';
+import { Millennium, callable } from '@steambrew/webkit';
 
 const receiveFrontendMethod = callable<[{ message: string; }], boolean>('Backend.receive_frontend_message');
-
-export default function WebkitMain() {
+export default async function WebkitMain() {
   if (!/^https:\/\/store\.steampowered\.com\/app\//.test(location.href)) return;
 
-  const BTN_ID = "add-app-to-library-btn";
-  const waitForEl = (selector: string, timeout = 20000) => new Promise((resolve, reject) => {
-      const found = document.querySelector(selector);
-      if (found) return resolve(found);
-      const obs = new MutationObserver(() => {
-        const el = document.querySelector(selector);
-        if (el) { obs.disconnect(); resolve(el); }
-      });
-      obs.observe(document.documentElement, { childList: true, subtree: true });
-      setTimeout(() => { obs.disconnect(); reject(new Error("timeout")); }, timeout);
-  });
+  const BTN_ID = "add-to-library-btn";
+  const container = (await Millennium.findElement(document, ".apphub_OtherSiteInfo"))[0];
+  if (document.getElementById(BTN_ID)) return;
 
-  const insertBtn = async () => {
+  const btn = document.createElement("button");
+  btn.id = BTN_ID;
+  btn.type = "button";
+	btn.style.marginRight = "3px";
+  btn.className = "btnv6_blue_hoverfade btn_medium";
+  btn.innerHTML = `<span>Add to Library</span>`;
+
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
     try {
-      const container = await waitForEl(".apphub_OtherSiteInfo") as HTMLElement;
-      if (document.getElementById(BTN_ID)) return;
-
-      const btn = document.createElement("button");
-      btn.id = BTN_ID;
-      btn.type = "button";
-	  btn.style.marginRight = "3px";
-
-      btn.className = "btnv6_blue_hoverfade btn_medium";
-      btn.innerHTML = `<span>Add to library</span>`;
-
-      btn.addEventListener("click", async (e) => {
-        e.preventDefault();
-        try {
-          const success = await receiveFrontendMethod({ message: window.location.href });
-          alert(success ? "Successfully added to the library!" : "Failed to add app.");
-        } catch (err) {
-          alert(err?.response ?? err);
-        }
-      });
-
-      const last = container.lastElementChild;
-      if (last) {
-        container.insertBefore(btn, last);
-      } else {
-        container.appendChild(btn);
-      }
-    } catch {
-      setTimeout(insertBtn, 1000);
+      const success = await receiveFrontendMethod({ message: window.location.href });
+      alert(success ? "Successfully added to the library!" : "Failed to add app.");
+    } catch (err) {
+      alert(err?.response ?? err);
     }
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", insertBtn, { once: true });
-  } else {
-    insertBtn();
-  }
-
-  const keepAlive = new MutationObserver(() => {
-    if (!document.getElementById(BTN_ID)) insertBtn();
   });
 
-  keepAlive.observe(document.body, { childList: true, subtree: true });
+  const last = container.lastElementChild;
+  if (last) {
+    container.insertBefore(btn, last);
+  } else {
+    container.appendChild(btn);
+  }
 }

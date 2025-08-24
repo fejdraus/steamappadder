@@ -1,2 +1,5 @@
 node_modules/
 .millennium/
+bun.lock
+pnpm-lock.yaml
+package-lock.json

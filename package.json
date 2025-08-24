@@ -14,9 +14,9 @@
 	"type": "module",
 	"name": "steam-app-adder",
 	"version": "1.0.0",
-	"description": "A plugin to add steam apps with manifests",
+	"description": "A plugin to add steam apps with manifests.",
 	"main": "./frontend/index.jsx",
-	"author": "Millennium",
+	"author": "Peron4TheWin",
 	"license": "MIT",
 	"dependencies": {
 		"@steambrew/api": "^5.2.4",
