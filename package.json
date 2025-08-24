@@ -15,7 +15,7 @@
 	"name": "steam-app-adder",
 	"version": "1.0.0",
 	"description": "A plugin to add steam apps with manifests.",
-	"main": "./frontend/index.jsx",
+	"main": "./webkit/index.ts",
 	"author": "Peron4TheWin",
 	"license": "MIT",
 	"dependencies": {
