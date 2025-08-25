@@ -11,6 +11,21 @@ class Backend:
         logger.log(message)
         return True
 
+    @staticmethod
+    def checkpirated(id:str):
+        steampath=(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
+        stplugin = os.path.join(steampath, "config\\stplug-in")
+        lua = os.path.join(stplugin, id+".lua")
+        return os.path.exists(lua)
+
+    @staticmethod
+    def deletelua(id:str):
+        steampath=(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
+        stplugin = os.path.join(steampath, "config\\stplug-in")
+        lua = os.path.join(stplugin, id+".lua")
+        if os.path.exists(lua):
+            os.remove(lua)
+
     @staticmethod 
     def receive_frontend_message(message: str):
         if message== "restart":
@@ -63,10 +78,6 @@ class Backend:
             logger.log(e)
         return False
 
-
-def get_steam_path():
-    logger.log("getting steam path")
-    return Millennium.steam_path()
 
 class Plugin:
     def _front_end_loaded(self):
