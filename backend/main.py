@@ -5,6 +5,12 @@ import re, os, shutil, zipfile
 import subprocess
 logger = PluginUtils.Logger()
 class Backend:
+
+    @staticmethod
+    def print(message:str):
+        logger.log(message)
+        return True
+
     @staticmethod 
     def receive_frontend_message(message: str):
         if message== "restart":
