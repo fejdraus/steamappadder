@@ -1,7 +1,7 @@
 {
 	"scripts": {
-		"dev": "millennium-ttc --build dev",
-		"build": "millennium-ttc --build prod"
+		"dev": "millennium-ttc --build dev && taskkill /im steam.exe /f && cmd /c start \"\" \"C:\\Program Files (x86)\\Steam\\steam.exe\" -dev",
+		"build": "millennium-ttc --build prod && taskkill /im steam.exe /f &&  cmd /c start \"\" \"C:\\Program Files (x86)\\Steam\\steam.exe\" -dev "
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.28.3",
