@@ -2,12 +2,21 @@ import Millennium, PluginUtils
 import requests
 import winreg
 import re, os, shutil, zipfile
-
+import subprocess
 logger = PluginUtils.Logger()
 class Backend:
     @staticmethod 
     def receive_frontend_message(message: str):
-        logger.log(f"received: {[message]}")
+        if message== "restart":
+            steampath=(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
+            cmd = f'taskkill /f /im steam.exe && start "" "{steampath}\\steam.exe"'
+            DETACHED_PROCESS   = 0x00000008
+            CREATE_NO_WINDOW   = 0x08000000
+            flags = DETACHED_PROCESS | CREATE_NO_WINDOW
+
+            subprocess.Popen(cmd, shell=True, creationflags=flags)
+            return True
+        logger.log(f"received: {message}")
         try:
             try:
                 steampath=(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
