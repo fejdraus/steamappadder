@@ -26,7 +26,8 @@ class Backend:
         lua = os.path.join(stplugin, id+".lua")
         if os.path.exists(lua):
             os.remove(lua)
-        return True
+            return True
+        return False
 
     @staticmethod 
     def receive_frontend_message(message: str):
