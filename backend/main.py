@@ -20,11 +20,13 @@ class Backend:
 
     @staticmethod
     def deletelua(id:str):
+        logger.log(id)
         steampath=(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
         stplugin = os.path.join(steampath, "config\\stplug-in")
         lua = os.path.join(stplugin, id+".lua")
         if os.path.exists(lua):
             os.remove(lua)
+        return True
 
     @staticmethod 
     def receive_frontend_message(message: str):
@@ -58,6 +60,15 @@ class Backend:
             logger.log(f"1")
             if requests.head(zip_url).status_code != 200:
                 logger.log(f"Game not found")
+                url = f"https://cdn.jsdmirror.cn/gh/SteamAutoCracks/ManifestHub@{app_id}/{app_id}.lua"
+                logger.log(url)
+                r = requests.get(url)
+                if r.status_code == 200:
+                    pathf = os.path.join(rf"{steampath}\config\stplug-in",f"{app_id}.lua")
+                    with open(pathf, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                            return True
                 return False
             with requests.get(zip_url, stream=True) as r, open(zip_path, "wb") as f:
                 shutil.copyfileobj(r.raw, f)
@@ -77,6 +88,8 @@ class Backend:
         except Exception as e:
             logger.log(e)
         return False
+
+
 
 
 class Plugin:
