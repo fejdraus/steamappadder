@@ -2,6 +2,8 @@
 import {ShowMessageBox , callable } from '@steambrew/webkit';
 
 const receiveFrontendMethod = callable<[{ message: string; }], boolean>('Backend.receive_frontend_message');
+const restartt = callable<[], boolean>('Backend.restart');
+
 
 export default function WebkitMain() {
   if (!/^https:\/\/store\.steampowered\.com\/app\//.test(location.href)) return;
@@ -38,7 +40,7 @@ export default function WebkitMain() {
           if (success) {
             const restart=window.confirm("The app was successfully added! Do you want to restart now?");
             if (restart){
-              await receiveFrontendMethod({ message: "restart" });
+              await restartt();
             }
           } else {
             alert("The app was not added!");
