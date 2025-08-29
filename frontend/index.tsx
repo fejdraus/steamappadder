@@ -2,6 +2,7 @@ import { sleep, callable, showModal, ConfirmModal } from '@steambrew/client';
 
 const deletegame = callable<[{ id: string; }], boolean>('Backend.deletelua');
 const receiveFrontendMethod = callable<[{ message: string; }], boolean>('Backend.receive_frontend_message');
+const restartt = callable<[], boolean>('Backend.restart');
 
 let lasturl="";
 async function waitForXPath(doc: Document, xpath: string, interval = 100) {
@@ -14,6 +15,14 @@ async function waitForXPath(doc: Document, xpath: string, interval = 100) {
             null
         );
         if (result.singleNodeValue) return result.singleNodeValue;
+        await new Promise(r => setTimeout(r, interval));
+    }
+}
+
+async function waitForSelector(doc: Document, selector: string, interval = 100) {
+    while (true) {
+        const el = doc.querySelector(selector);
+        if (el) return el;
         await new Promise(r => setTimeout(r, interval));
     }
 }
@@ -94,14 +103,28 @@ export default async function PluginMain() {
             let documentt = g_PopupManager.GetExistingPopup("SP Desktop_uid0").window.document;
 
             await waitForSteamLoaded();
-            let targetSpan = await waitForXPath(documentt, "//span[normalize-space(text())='Support']");
-            console.log('Found span:', targetSpan);
+            let rightmostSpan: HTMLElement | null = null;
             //await sleep(550);
 
-            const buttonElement = targetSpan.parentElement.parentElement;
-            const buttonContainer = buttonElement.parentElement;
-            const panel = buttonContainer.parentElement;
-            const existingDeleteButton = Array.from(panel.querySelectorAll('span')).find(span => span.textContent.trim() === 'Delete'
+            const buttonContainer = await waitForSelector(documentt, "div[class*='Panel'][style*='height: 33px']");
+            if (buttonContainer) {
+                // 2. Get all spans inside
+                const spans = Array.from(buttonContainer.querySelectorAll("div"));
+
+                let maxLeft = -Infinity;
+                spans.forEach(span => {
+                    const container = span.closest<HTMLElement>("[style*='left']");
+                    if (container) {
+                        const leftValue = parseFloat(container.style.left.replace("px", ""));
+                        if (!isNaN(leftValue) && leftValue > maxLeft) {
+                            maxLeft = leftValue;
+                            rightmostSpan = span;
+                        }
+                    }
+                });
+
+            }
+            const existingDeleteButton = Array.from(buttonContainer.querySelectorAll('span')).find(span => span.textContent.trim() === 'Delete'
             );
             if (existingDeleteButton) {
                 existingDeleteButton.remove();
@@ -110,16 +133,16 @@ export default async function PluginMain() {
                 continue;
             }
             // Clone the Store Page button structure
-            const deleteButtonContainer = buttonContainer.cloneNode(true);
+            const deleteButtonContainer = rightmostSpan.cloneNode(true);
             // Update the text to "Delete"
             const deleteSpan = deleteButtonContainer.querySelector('span');
             deleteSpan.textContent = 'Delete';
             // Position it after the last button (adjust left position)
-            const newLeft = (Number(targetSpan.parentElement.parentElement.parentElement.style.left.replace("px", ""))) + 120; // Adjust spacing as needed
+            const newLeft = (Number(rightmostSpan.style.left.replace("px", ""))) + 120; // Adjust spacing as needed
             console.log(newLeft);
             deleteButtonContainer.style.left = newLeft + 'px';
             // Add the delete button to the panel
-            panel.appendChild(deleteButtonContainer);
+            buttonContainer.appendChild(deleteButtonContainer);
             // Get the clickable element (the one with role="button")
             const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
             // Add the click event
@@ -129,7 +152,7 @@ export default async function PluginMain() {
                 const appId = path.split("/library/app/")[1];
                 deletegame({id:appId}).then((r) => {if (r){
                     const onOK = () => {
-                        receiveFrontendMethod({ message: "restart" })
+                        restartt()
                     }
                     MILLENNIUM_API.showModal(
                         SP_REACT.createElement(MILLENNIUM_API.ConfirmModal, { strTitle: 'Succesfully removed game', strDescription: 'You need to restart for it to take effect, do you want to do it now?',onOK:onOK),
