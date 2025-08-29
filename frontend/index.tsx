@@ -109,16 +109,17 @@ export default async function PluginMain() {
             const buttonContainer = await waitForSelector(documentt, "div[class*='Panel'][style*='height: 33px']");
             if (buttonContainer) {
                 // 2. Get all spans inside
-                const spans = Array.from(buttonContainer.querySelectorAll("div"));
+                const divs = Array.from(buttonContainer.querySelectorAll("div[style*='left']"));
 
-                let maxLeft = -Infinity;
-                spans.forEach(span => {
-                    const container = span.closest<HTMLElement>("[style*='left']");
-                    if (container) {
-                        const leftValue = parseFloat(container.style.left.replace("px", ""));
-                        if (!isNaN(leftValue) && leftValue > maxLeft) {
-                            maxLeft = leftValue;
-                            rightmostSpan = span;
+                let minLeft = Infinity;
+
+                divs.forEach(div => {
+                    // Must contain a span (nested anywhere inside)
+                    if (div.querySelector("span")) {
+                        const leftValue = parseFloat(div.style.left.replace("px", ""));
+                        if (!isNaN(leftValue) && leftValue < minLeft) {
+                            minLeft = leftValue;
+                            rightmostSpan = div;
                         }
                     }
                 });
@@ -136,6 +137,11 @@ export default async function PluginMain() {
             const deleteButtonContainer = rightmostSpan.cloneNode(true);
             // Update the text to "Delete"
             const deleteSpan = deleteButtonContainer.querySelector('span');
+            if (deleteSpan === null){
+                lasturl = "";
+                continue;
+            }
+
             deleteSpan.textContent = 'Delete';
             // Position it after the last button (adjust left position)
             const newLeft = (Number(rightmostSpan.style.left.replace("px", ""))) + 120; // Adjust spacing as needed
