@@ -1,23 +1,10 @@
 import { sleep, callable, showModal, ConfirmModal } from '@steambrew/client';
 
 const deletegame = callable<[{ id: string; }], boolean>('Backend.deletelua');
-const receiveFrontendMethod = callable<[{ message: string; }], boolean>('Backend.receive_frontend_message');
 const restartt = callable<[], boolean>('Backend.restart');
 
 let lasturl="";
-async function waitForXPath(doc: Document, xpath: string, interval = 100) {
-    while (true) {
-        const result = doc.evaluate(
-            xpath,
-            doc,
-            null,
-            XPathResult.FIRST_ORDERED_NODE_TYPE,
-            null
-        );
-        if (result.singleNodeValue) return result.singleNodeValue;
-        await new Promise(r => setTimeout(r, interval));
-    }
-}
+
 
 async function waitForSelector(doc: Document, selector: string, interval = 100) {
     while (true) {
@@ -60,10 +47,7 @@ async function waitForSteamLoaded() {
     }
 }
 
-async function restart(){
-    await receiveFrontendMethod({ message: "restart" });
-    return true;
-}
+
 
 export default async function PluginMain() {
         while (true) {
@@ -111,14 +95,14 @@ export default async function PluginMain() {
                 // 2. Get all spans inside
                 const divs = Array.from(buttonContainer.querySelectorAll("div[style*='left']"));
 
-                let minLeft = Infinity;
+                let maxLeft = -Infinity;
 
                 divs.forEach(div => {
                     // Must contain a span (nested anywhere inside)
                     if (div.querySelector("span")) {
-                        const leftValue = parseFloat(div.style.left.replace("px", ""));
-                        if (!isNaN(leftValue) && leftValue < minLeft) {
-                            minLeft = leftValue;
+                        const left = parseFloat(div.style.left.replace("px", ""));
+                        if (!isNaN(left) && left > maxLeft) {
+                            maxLeft = left;
                             rightmostSpan = div;
                         }
                     }
