@@ -65,7 +65,7 @@ export default async function PluginMain() {
                 console.log(newLeft);
                 deleteButtonContainer.style.left = newLeft + 'px';
                 buttonContainer.appendChild(deleteButtonContainer);
-                //const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
+                //const deleteButton = sdeleteButtonContainer.querySelector('[role="button"]');
                 deleteButtonContainer.addEventListener('click', function() {
                     console.log('pressed');
                     const path = MainWindowBrowserManager.m_lastLocation.pathname;
