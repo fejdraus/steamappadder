@@ -39,47 +39,49 @@ function rightdiv(panel){
 
 export default async function PluginMain() {
         while (true) {
-            await sleep(10);
-            if (g_PopupManager.GetExistingPopup("SP Desktop_uid0") == null) continue
-            let documentt = g_PopupManager.GetExistingPopup("SP Desktop_uid0").window.document;
-            const buttonContainer = await waitForSelector(documentt, "div[class*='Panel'][style*='height: 33px']");
-            let rightmostSpan: HTMLElement | null = null;
+            try {
+                await sleep(10);
+                if (g_PopupManager.GetExistingPopup("SP Desktop_uid0") == null) continue
+                let documentt = g_PopupManager.GetExistingPopup("SP Desktop_uid0").window.document;
+                const buttonContainer = await waitForSelector(documentt, "div[class*='Panel'][style*='height: 33px']");
+                let rightmostSpan: HTMLElement | null = null;
 
-            if (buttonContainer) {
-                rightmostSpan=rightdiv(buttonContainer);
-            }
-            const existingDeleteButton = Array.from(buttonContainer.querySelectorAll('span')).find(span => span.textContent.trim() === 'Delete');
-            if (existingDeleteButton) {
-                let rightnum=(Number(rightmostSpan.style.left.replace("px", ""))) + 120;
-                existingDeleteButton.parentElement.parentElement.parentElement.style.left=rightnum+"px";
-                continue;
-            }
+                if (buttonContainer) {
+                    rightmostSpan=rightdiv(buttonContainer);
+                }
+                const existingDeleteButton = Array.from(buttonContainer.querySelectorAll('span')).find(span => span.textContent.trim() === 'Delete');
+                if (existingDeleteButton) {
+                    let rightnum=(Number(rightmostSpan.style.left.replace("px", ""))) + 120;
+                    existingDeleteButton.parentElement.parentElement.parentElement.style.left=rightnum+"px";
+                    continue;
+                }
 
 
-            const deleteButtonContainer = rightmostSpan.cloneNode(true);
-            const deleteSpan = deleteButtonContainer.querySelector('span');
+                const deleteButtonContainer = rightmostSpan.cloneNode(true);
+                const deleteSpan = deleteButtonContainer.querySelector('span');
 
-            deleteSpan.textContent = 'Delete';
-            const newLeft = (Number(rightmostSpan.style.left.replace("px", ""))) + 120; // Adjust spacing as needed
-            console.log(newLeft);
-            deleteButtonContainer.style.left = newLeft + 'px';
-            buttonContainer.appendChild(deleteButtonContainer);
-            const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
-            deleteButton.addEventListener('click', function() {
-                console.log('pressed');
-                const path = MainWindowBrowserManager.m_lastLocation.pathname;
-                const appId = path.split("/library/app/")[1];
-                deletegame({id:appId}).then((r) => {if (r){
-                    const onOK = () => {
-                        restartt()
-                    }
-                    MILLENNIUM_API.showModal(
-                        SP_REACT.createElement(MILLENNIUM_API.ConfirmModal, { strTitle: 'Succesfully removed game', strDescription: 'You need to restart for it to take effect, do you want to do it now?',onOK:onOK),
-                        g_PopupManager.GetExistingPopup('SP Desktop_uid0').window
-                    )
-                    }
+                deleteSpan.textContent = 'Delete';
+                const newLeft = (Number(rightmostSpan.style.left.replace("px", ""))) + 120; // Adjust spacing as needed
+                console.log(newLeft);
+                deleteButtonContainer.style.left = newLeft + 'px';
+                buttonContainer.appendChild(deleteButtonContainer);
+                const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
+                deleteButton.addEventListener('click', function() {
+                    console.log('pressed');
+                    const path = MainWindowBrowserManager.m_lastLocation.pathname;
+                    const appId = path.split("/library/app/")[1];
+                    deletegame({id:appId}).then((r) => {if (r){
+                        const onOK = () => {
+                            restartt()
+                        }
+                        MILLENNIUM_API.showModal(
+                            SP_REACT.createElement(MILLENNIUM_API.ConfirmModal, { strTitle: 'Succesfully removed game', strDescription: 'You need to restart for it to take effect, do you want to do it now?',onOK:onOK),
+                            g_PopupManager.GetExistingPopup('SP Desktop_uid0').window
+                        )
+                        }
+                    });
                 });
-            });
+            } catch { //ignore}
         }
 
 }
