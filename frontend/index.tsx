@@ -65,8 +65,8 @@ export default async function PluginMain() {
                 console.log(newLeft);
                 deleteButtonContainer.style.left = newLeft + 'px';
                 buttonContainer.appendChild(deleteButtonContainer);
-                const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
-                deleteButton.addEventListener('click', function() {
+                //const deleteButton = deleteButtonContainer.querySelector('[role="button"]');
+                deleteButtonContainer.addEventListener('click', function() {
                     console.log('pressed');
                     const path = MainWindowBrowserManager.m_lastLocation.pathname;
                     const appId = path.split("/library/app/")[1];
@@ -81,7 +81,7 @@ export default async function PluginMain() {
                         }
                     });
                 });
-            } catch { //ignore}
+            } catch (e){console.error("An error occurred:", e.message); //ignore}
         }
 
 }
