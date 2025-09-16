@@ -52,6 +52,19 @@ jobs:
             }
           }
           EOF
+      - name: Generate plugin.json
+        run: |
+          cat > frontend/plugin.json << 'EOF'
+          {
+              "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
+              "name": "steam-app-adder",
+              "common_name": "Steam App Adder",
+              "description": "Adds steam apps via steamtools lua.",
+              "version": "1.0.3",
+              "include": ["public"]
+          }
+          EOF
+
 
       # 3️⃣ Install PNPM
       - name: Install pnpm
