@@ -19,6 +19,39 @@ jobs:
         uses: actions/checkout@v3
         with:
           persist-credentials: true  # allows push back
+      # 2️⃣ create json
+      - name: Generate package.json
+        run: |
+          mkdir -p frontend
+          cat > frontend/package.json << 'EOF'
+          {
+            "scripts": {
+              "dev": "millennium-ttc --build dev",
+              "build": "millennium-ttc --build prod"
+            },
+            "devDependencies": {
+              "@babel/preset-env": "^7.28.3",
+              "@babel/preset-react": "^7.27.1",
+              "@babel/traverse": "^7.28.3",
+              "@types/react": "^19.1.11",
+              "@types/react-dom": "^19.1.7",
+              "@types/webpack": "^5.28.5"
+            },
+            "type": "module",
+            "name": "steam-app-adder",
+            "version": "1.0.0",
+            "description": "A plugin to add steam apps with manifests.",
+            "main": "webkit/index.tsx",
+            "author": "Peron4TheWin",
+            "license": "MIT",
+            "dependencies": {
+              "@steambrew/api": "^5.5.2",
+              "@steambrew/client": "^5.5.2",
+              "@steambrew/ttc": "^2.7.3",
+              "@steambrew/webkit": "^5.5.2"
+            }
+          }
+          EOF
 
       # 3️⃣ Install PNPM
       - name: Install pnpm
