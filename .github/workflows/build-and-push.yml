@@ -64,7 +64,29 @@ jobs:
               "include": ["public"]
           }
           EOF
-
+      - name: Generate tsconfig.json
+        run: |
+          cat > frontend/tsconfig.json << 'EOF'
+          {
+            "compilerOptions": {
+              "outDir": ".millennium/Dist",
+              "module": "ESNext",
+              "target": "ES2020",
+              "jsx": "react",
+              "declaration": false,
+              "moduleResolution": "node",
+              "noUnusedLocals": true,
+              "noUnusedParameters": true,
+              "esModuleInterop": true,
+              "noImplicitReturns": true,
+              "noImplicitThis": true,
+              "noImplicitAny": true,
+              "allowSyntheticDefaultImports": true,
+              "skipLibCheck": true,
+              "resolveJsonModule": true
+            }
+          }
+          EOF
 
       # 3️⃣ Install PNPM
       - name: Install pnpm
