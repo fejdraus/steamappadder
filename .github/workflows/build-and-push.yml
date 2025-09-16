@@ -20,13 +20,6 @@ jobs:
         with:
           persist-credentials: true  # allows push back
 
-      # 2️⃣ Set up Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
       # 3️⃣ Install PNPM
       - name: Install pnpm
         run: npm install -g pnpm
