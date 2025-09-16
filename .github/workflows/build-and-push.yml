@@ -117,17 +117,12 @@ jobs:
         run: pnpm run dev
       
 
-      - name: move files
-        run: |
-          mv .millennium millennium
-        # 7️⃣ Commit & Push Dist back to repo
-
       - name: Commit & push build
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Add only the build output
-          git add millennium/Dist
+          git add .millennium/Dist
           # Commit changes, but ignore if nothing changed
           git commit -m "Update frontend build [ci skip]" || echo "No changes to commit"
           # Push back to the same branch
