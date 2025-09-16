@@ -75,7 +75,7 @@ export default async function PluginMain() {
                             restartt()
                         }
                         MILLENNIUM_API.showModal(
-                            SP_REACT.createElement(MILLENNIUM_API.ConfirmModal, { strTitle: 'Succesfully removed game', strDescription: 'You need to restart for it to take effect, do you want to do it now?',onOK:onOK),
+                            SP_REACT.createElement(MILLENNIUM_API.ConfirmModal, { strTitle: 'Succesfully removed game', strDescription: 'You need to restart for it to take effect, do you want to do it now?',onOK:onOK}),
                             g_PopupManager.GetExistingPopup('SP Desktop_uid0').window
                         )
                         }
