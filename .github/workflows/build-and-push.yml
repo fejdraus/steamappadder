@@ -70,7 +70,7 @@ jobs:
           cat > frontend/tsconfig.json << 'EOF'
           {
             "compilerOptions": {
-              "outDir": ".millennium/Dist",
+              "outDir": "dist",
               "module": "ESNext",
               "target": "ES2020",
               "jsx": "react",
