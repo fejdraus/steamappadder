@@ -1,0 +1,58 @@
+name: Build & Push Frontend
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:   # allows manual trigger
+
+permissions:
+  contents: write  # needed to push back to repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo with write permissions
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # allows push back
+
+      # 2️⃣ Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      # 3️⃣ Install PNPM
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 4️⃣ Install frontend dependencies
+      - name: Install frontend deps
+        run: pnpm install
+        working-directory: frontend
+
+      # 5️⃣ Build frontend
+      - name: Build frontend
+        run: pnpm build
+        working-directory: frontend
+
+      # 6️⃣ Prepare .millennium/Dist
+      - name: Copy build output
+        run: |
+          mkdir -p .millennium/Dist
+          cp frontend/dist/index.js .millennium/Dist/index.js
+          cp frontend/dist/webkit.js .millennium/Dist/webkit.js
+
+      # 7️⃣ Commit and push .millennium/Dist
+      - name: Commit & push build
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .millennium/Dist
+          git commit -m "Update frontend build [ci skip]" || echo "No changes to commit"
+          git push origin main
