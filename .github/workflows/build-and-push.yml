@@ -113,7 +113,7 @@ jobs:
 
       # 5️⃣ Build frontend
       - name: Build frontend
-        run: pnpm build
+        run: pnpm run dev
         working-directory: frontend
 
       # 6️⃣ Prepare .millennium/Dist
