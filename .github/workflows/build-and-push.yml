@@ -23,7 +23,7 @@ jobs:
       - name: Generate package.json
         run: |
           mkdir -p frontend
-          cat > frontend/package.json << 'EOF'
+          cat > package.json << 'EOF'
           {
             "scripts": {
               "dev": "millennium-ttc --build dev",
@@ -52,6 +52,7 @@ jobs:
             }
           }
           EOF
+          
       - name: Generate plugin.json
         run: |
           cat > frontend/plugin.json << 'EOF'
