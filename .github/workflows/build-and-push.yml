@@ -109,12 +109,10 @@ jobs:
       # 4️⃣ Install frontend dependencies
       - name: Install frontend deps
         run: pnpm install
-        working-directory: frontend
 
       # 5️⃣ Build frontend
       - name: Build frontend
         run: pnpm run dev
-        working-directory: frontend
 
       # 6️⃣ Prepare .millennium/Dist
       - name: Copy build output
