@@ -87,6 +87,20 @@ jobs:
             }
           }
           EOF
+      - name: Generate webkit/tsconfig.json
+        run: |
+          mkdir -p webkit
+          cat > webkit/tsconfig.json << 'EOF'
+          {
+            "extends": "../tsconfig.json",
+            "compilerOptions": {
+              "esModuleInterop": true,
+              "allowSyntheticDefaultImports": true
+            },
+            "include": ["."],
+            "exclude": ["node_modules", "../frontend"]
+          }
+          EOF
 
       # 3️⃣ Install PNPM
       - name: Install pnpm
