@@ -52,10 +52,10 @@ jobs:
             }
           }
           EOF
-          
+
       - name: Generate plugin.json
         run: |
-          cat > frontend/plugin.json << 'EOF'
+          cat > plugin.json << 'EOF'
           {
               "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
               "name": "steam-app-adder",
