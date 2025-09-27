@@ -58,12 +58,6 @@ def checker(app_id:int,luas,manifests) -> bool:
     if requests.get(f"https://mellyiscoolaf.pythonanywhere.com/{app_id}").status_code==200:
         logger.log(f"downloading {app_id} from https://mellyiscoolaf.pythonanywhere.com/{app_id}")
         return mellyRyuu(app_id,luas,manifests)
-    if requests.get(f"https://raw.githubusercontent.com/sushi-dev55/sushitools-games-repo/refs/heads/main/{app_id}.zip")==200:
-        logger.log(f"downloading {app_id} from https://raw.githubusercontent.com/sushi-dev55/sushitools-games-repo/refs/heads/main/{app_id}.zip")
-        return sushi(app_id,luas,manifests)
-    if requests.get(f"https://cdn.jsdmirror.cn/gh/SteamAutoCracks/ManifestHub@{app_id}/{app_id}.lua")==200:
-        logger.log(f"downloading {app_id} from https://cdn.jsdmirror.cn/gh/SteamAutoCracks/ManifestHub@{app_id}/{app_id}.lua")
-        return china(app_id,luas)
     return False
 
 def getSteamPath() -> str:
@@ -126,4 +120,5 @@ class Plugin:
         Millennium.ready()
 
     def _unload(self):
+
         logger.log("unloading")
