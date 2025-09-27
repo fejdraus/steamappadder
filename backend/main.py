@@ -11,11 +11,20 @@ def getSteamPath() -> str:
     #Need to check if that first one really returns the correct path
     #(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
 
-def download_and_extract(url, lua_folder, manifest_folder):
+def download_and_extract(url, lua_folder, manifest_folder) -> bool:
     try:
         disk = (str(os.environ["SYSTEMDRIVE"]))
         temp_folder = rf"{disk}\temp\steam_mods"
-        response = requests.get(url, stream=True)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/138.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.9"
+        }
+
+        response = requests.get(url, headers=headers, stream=True)
         response.raise_for_status()  # error if download failed
         with zipfile.ZipFile(BytesIO(response.content)) as z:
             z.extractall(temp_folder)
@@ -81,7 +90,8 @@ class Backend:
             return False
         luas=os.path.join(getSteamPath(),"config","stplug-in")
         manifests = os.path.join(getSteamPath(), "config","manifests")
-        url = f"https://mellyiscoolaf.pythonanywhere.com/{int(m.group(1))}"
+        url = str(f"https://mellyiscoolaf.pythonanywhere.com/{int(m.group(1))}")
+        logger.log(url)
         return download_and_extract(url,luas,manifests)
     
 
