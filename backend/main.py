@@ -6,6 +6,38 @@ import subprocess
 from io import BytesIO
 logger = PluginUtils.Logger()
 
+def getSteamPath() -> str:
+    return Millennium.steam_path()
+    #Need to check if that first one really returns the correct path
+    #(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
+
+def download_and_extract(url, lua_folder, manifest_folder):
+    try:
+        disk = (str(os.environ["SYSTEMDRIVE"]))
+        temp_folder = rf"{disk}\temp\steam_mods"
+        response = requests.get(url, stream=True)
+        response.raise_for_status()  # error if download failed
+        with zipfile.ZipFile(BytesIO(response.content)) as z:
+            z.extractall(temp_folder)
+        for root, _, files in os.walk(temp_folder):
+            for file in files:
+                src_path = os.path.join(root, file)
+
+                if file.endswith(".lua"):
+                    dest_path = os.path.join(lua_folder, file)
+                elif "manifest" in file.lower():
+                    dest_path = os.path.join(manifest_folder, file)
+                else:
+                    continue
+                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+                shutil.move(src_path, dest_path)
+        shutil.rmtree(temp_folder)
+        return True
+    except Exception as e:
+        logger.log(e)
+        return False
+
+
 class Backend:
 
     @staticmethod
@@ -49,67 +81,13 @@ class Backend:
             return False
         luas=os.path.join(getSteamPath(),"config","stplug-in")
         manifests = os.path.join(getSteamPath(), "config","manifests")
-        return checker(int(m.group(1)),luas,manifests)
+        url = f"https://mellyiscoolaf.pythonanywhere.com/{int(m.group(1))}"
+        return download_and_extract(url,luas,manifests)
+    
 
 
 
 
-def checker(app_id:int,luas,manifests) -> bool:
-    if requests.get(f"https://mellyiscoolaf.pythonanywhere.com/{app_id}").status_code==200:
-        logger.log(f"downloading {app_id} from https://mellyiscoolaf.pythonanywhere.com/{app_id}")
-        return mellyRyuu(app_id,luas,manifests)
-    return False
-
-def getSteamPath() -> str:
-    return Millennium.steam_path()
-    #Need to check if that first one really returns the correct path
-    #(winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam"), "SteamPath")[0])
-
-def download_and_extract(url, lua_folder, manifest_folder):
-    try:
-        disk = (str(os.environ["SYSTEMDRIVE"]))
-        temp_folder = rf"{disk}\temp\steam_mods"
-        response = requests.get(url, stream=True)
-        response.raise_for_status()  # error if download failed
-        with zipfile.ZipFile(BytesIO(response.content)) as z:
-            z.extractall(temp_folder)
-        for root, _, files in os.walk(temp_folder):
-            for file in files:
-                src_path = os.path.join(root, file)
-
-                if file.endswith(".lua"):
-                    dest_path = os.path.join(lua_folder, file)
-                elif "manifest" in file.lower():
-                    dest_path = os.path.join(manifest_folder, file)
-                else:
-                    continue
-                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-                shutil.move(src_path, dest_path)
-        shutil.rmtree(temp_folder)
-        return True
-    except Exception as e:
-        logger.log(e)
-        return False
-
-
-def mellyRyuu(app_id:int,luas,manifests) -> bool:
-    return download_and_extract(f"https://mellyiscoolaf.pythonanywhere.com/{app_id}", luas, manifests)
-
-def china (app_id:int,luas) -> bool:
-    url = f"https://cdn.jsdmirror.cn/gh/SteamAutoCracks/ManifestHub@{app_id}/{app_id}.lua"
-    logger.log(url)
-    r = requests.get(url)
-    if r.status_code == 200:
-        pathf = os.path.join(luas,f"{app_id}.lua")
-        with open(pathf, "wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-                return True
-    return False
-
-
-def sushi(app_id:int,luas,manifests) -> bool:
-    return download_and_extract(f"https://raw.githubusercontent.com/sushi-dev55/sushitools-games-repo/refs/heads/main/{app_id}.zip", luas, manifests)
 class Plugin:
     def _front_end_loaded(self):
         logger.log("Frontend loaded!")
