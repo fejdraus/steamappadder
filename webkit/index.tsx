@@ -35,7 +35,7 @@ export default function WebkitMain() {
 
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
-        btn.remove();
+        btn.style.display = "none";
         try {
           const success = await receiveFrontendMethod({ message: window.location.href });
           if (success) {
