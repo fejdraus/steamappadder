@@ -177,7 +177,7 @@ let PluginEntryPointMain = function() { var millennium_main = (function (exports
                 btn.innerHTML = `<span>Add to library</span>`;
                 btn.addEventListener("click", async (e) => {
                     e.preventDefault();
-                    btn.remove();
+                    btn.style.display = "none";
                     try {
                         const success = await receiveFrontendMethod({ message: window.location.href });
                         if (success) {
