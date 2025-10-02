@@ -10,10 +10,33 @@ release-assets/
 ├── config.json        (611 B)   - Millennium configuration
 ├── millennium.ini     (180 B)   - Plugin settings
 ├── release.zip        (~12 KB)  - steamappadder plugin
-└── steamtools.zip     (11 MB)   - SteamTools application
+├── steamtools.zip     (11 MB)   - SteamTools application
+└── InstallerFull.exe  (~16 MB)  - Compiled installer (build required)
 ```
 
 ## Release Creation Process
+
+### Step 0: Build InstallerFull.exe
+
+Before creating a release, you need to compile `install.py` into `InstallerFull.exe`:
+
+**Using build script:**
+```bash
+# Windows
+build_installer.bat
+
+# Or manually with PyInstaller
+pip install pyinstaller pyuac requests
+pyinstaller --onefile --noconsole --name=InstallerFull --hidden-import=pyuac --hidden-import=requests install.py
+```
+
+The executable will be created in `dist/InstallerFull.exe`. Copy it to `release-assets/`.
+
+**Why InstallerFull.exe?**
+- Users don't need Python installed
+- Single-click installation
+- Professional appearance
+- Admin rights handled automatically
 
 ### Step 1: Ensure Code is Compiled
 
@@ -91,11 +114,12 @@ powershell "Compress-Archive -Path steamappadder -DestinationPath release.zip -F
 
 In the **"Attach binaries"** section, upload ALL files from `release-assets/`:
 
-1. ✅ **a.reg** - SteamTools registry settings
-2. ✅ **config.json** - Millennium configuration
-3. ✅ **millennium.ini** - Plugin settings
-4. ✅ **release.zip** - steamappadder plugin (MAIN FILE!)
-5. ✅ **steamtools.zip** - SteamTools application
+1. ✅ **InstallerFull.exe** - Compiled installer (MAIN FILE FOR USERS!)
+2. ✅ **a.reg** - SteamTools registry settings
+3. ✅ **config.json** - Millennium configuration
+4. ✅ **millennium.ini** - Plugin settings
+5. ✅ **release.zip** - steamappadder plugin
+6. ✅ **steamtools.zip** - SteamTools application
 
 **Important:** GitHub will automatically add `Source code (zip)` and `Source code (tar.gz)` - this is normal.
 
