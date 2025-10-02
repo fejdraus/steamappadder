@@ -50,7 +50,3 @@ If you prefer manual installation:
 2. If game is not added - click blue **"Add to library"** button
 3. If game is already added - click red **"Remove from library"** button
 4. Restart Steam when prompted (or later)
-
----
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
