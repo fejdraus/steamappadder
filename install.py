@@ -86,7 +86,7 @@ def install_steam_tools():
     steamtools_folder = os.path.join(program_files, 'SteamTools')
     os.makedirs(steamtools_folder, exist_ok=True)
 
-    source_url = "https://github.com/Peron4TheWin/steamappadder/releases/download/release/steamtools.zip"
+    source_url = "https://github.com/fejdraus/steamappadder/releases/download/release/steamtools.zip"
     zip_file = os.path.join(steamtools_folder, "steamtools.zip")
 
     if not download_file(source_url, zip_file):
@@ -122,7 +122,7 @@ def install_steam_plugins(steam_path):
 
     print(f"Installing plugins to: {plugins_folder}")
 
-    source_url = "https://github.com/Peron4TheWin/steamappadder/releases/download/release/release.zip"
+    source_url = "https://github.com/fejdraus/steamappadder/releases/download/release/release.zip"
     zip_file = os.path.join(plugins_folder, "download.zip")
 
     if not download_file(source_url, zip_file):
@@ -145,18 +145,18 @@ def config_millenium(steam_path):
     # Download millennium.ini
     ext_folder = os.path.join(steam_path, "ext")
     os.makedirs(ext_folder, exist_ok=True)
-    millennium_url = "https://github.com/Peron4TheWin/steamappadder/releases/download/release/millennium.ini"
+    millennium_url = "https://github.com/fejdraus/steamappadder/releases/download/release/millennium.ini"
     millennium_path = os.path.join(ext_folder, "millennium.ini")
     download_file(millennium_url, millennium_path)
 
     # Download config.json
-    config_url = "https://github.com/Peron4TheWin/steamappadder/releases/download/release/config.json"
+    config_url = "https://github.com/fejdraus/steamappadder/releases/download/release/config.json"
     config_path = os.path.join(ext_folder, "config.json")
     download_file(config_url, config_path)
 
 def reg_import():
     # Download reg file
-    reg_url = "https://github.com/Peron4TheWin/steamappadder/releases/download/release/a.reg"
+    reg_url = "https://github.com/fejdraus/steamappadder/releases/download/release/a.reg"
     reg_path = os.path.join(os.environ.get('TEMP', '.'), 'a.reg')
     if download_file(reg_url, reg_path):
         # Import registry file

@@ -42,7 +42,7 @@ jobs:
             "version": "1.0.0",
             "description": "A plugin to add steam apps with manifests.",
             "main": "webkit/index.tsx",
-            "author": "Peron4TheWin",
+            "author": "fejdraus",
             "license": "MIT",
             "dependencies": {
               "@steambrew/api": "^5.5.2",
