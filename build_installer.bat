@@ -3,10 +3,10 @@ echo Building InstallerFull.exe...
 echo.
 
 REM Install PyInstaller if needed
-pip install pyinstaller pyuac requests
+pip install pyinstaller pyuac requests pywin32
 
 REM Build the installer
-pyinstaller --onefile --noconsole --name=InstallerFull --hidden-import=pyuac --hidden-import=requests install.py
+pyinstaller --onefile --name=InstallerFull --hidden-import=pyuac --hidden-import=requests --hidden-import=win32security --hidden-import=win32api --hidden-import=win32con install.py
 
 echo.
 echo Build complete! Check dist\InstallerFull.exe

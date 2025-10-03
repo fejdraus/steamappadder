@@ -20,13 +20,15 @@ def build_installer():
     cmd = [
         "pyinstaller",
         "--onefile",                    # Single executable file
-        "--noconsole",                  # No console window (GUI mode)
         "--icon=NONE",                  # No icon (can add custom icon later)
         "--name=InstallerFull",         # Output name
         "--add-data", "install.py;.",   # Include install.py
         "--hidden-import=pyuac",        # Hidden imports
         "--hidden-import=requests",
         "--hidden-import=zipfile",
+        "--hidden-import=win32security",
+        "--hidden-import=win32api",
+        "--hidden-import=win32con",
         "install.py"
     ]
 
