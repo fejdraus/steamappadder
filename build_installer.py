@@ -18,7 +18,7 @@ def build_installer():
 
     # PyInstaller command
     cmd = [
-        "pyinstaller",
+        sys.executable, "-m", "PyInstaller",
         "--onefile",                    # Single executable file
         "--icon=NONE",                  # No icon (can add custom icon later)
         "--name=InstallerFull",         # Output name
